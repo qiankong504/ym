@@ -13,7 +13,7 @@
   "settings": {
     "autoPlay": false,
     "cardOpacity": 13,
-    "cardFrost": 18,
+    "cardFrost": 11,
     "backgroundPhotos": [],
     "activeBackground": ""
   },
@@ -45,6 +45,15 @@
       "createdAt": "2026-06-16T13:20:47.193Z",
       "lastEditedBy": "default",
       "lastEditedAt": "2026-06-16T13:20:47.193Z"
+    },
+    "mqgoefyrwkn2yb": {
+      "text": "测试同步",
+      "mood": "excited",
+      "photo": "",
+      "createdBy": "default",
+      "createdAt": "2026-06-16T13:26:34.323Z",
+      "lastEditedBy": "default",
+      "lastEditedAt": "2026-06-16T13:26:34.323Z"
     }
   },
   "todos": {
