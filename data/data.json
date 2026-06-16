@@ -1,0 +1,104 @@
+{
+  "users": {
+    "default": {
+      "id": "default",
+      "nickname": "1",
+      "avatar": "Ã°ÂÂÂ",
+      "avatarType": "emoji",
+      "createdAt": "2026-06-16T13:06:42.680Z"
+    }
+  },
+  "currentUser": "default",
+  "theme": "cherry",
+  "settings": {
+    "autoPlay": false,
+    "cardOpacity": 13,
+    "cardFrost": 11,
+    "backgroundPhotos": [],
+    "activeBackground": ""
+  },
+  "notes": {
+    "mqgnpwsh89itte": {
+      "text": "123",
+      "mood": "calm",
+      "photo": "",
+      "createdBy": "default",
+      "createdAt": "2026-06-16T13:07:29.729Z",
+      "lastEditedBy": "default",
+      "lastEditedAt": "2026-06-16T13:10:35.873Z",
+      "_id": "mqgnpwsh89itte"
+    },
+    "mqgnxsig34wxif": {
+      "text": "啊",
+      "mood": "happy",
+      "photo": "",
+      "createdBy": "default",
+      "createdAt": "2026-06-16T13:13:37.432Z",
+      "lastEditedBy": "default",
+      "lastEditedAt": "2026-06-16T13:13:37.432Z"
+    },
+    "mqgo7049ez2lu7": {
+      "text": "4",
+      "mood": "sad",
+      "photo": "",
+      "createdBy": "default",
+      "createdAt": "2026-06-16T13:20:47.193Z",
+      "lastEditedBy": "default",
+      "lastEditedAt": "2026-06-16T13:20:47.193Z"
+    },
+    "mqgoefyrwkn2yb": {
+      "text": "测试同步",
+      "mood": "excited",
+      "photo": "",
+      "createdBy": "default",
+      "createdAt": "2026-06-16T13:26:34.323Z",
+      "lastEditedBy": "default",
+      "lastEditedAt": "2026-06-16T13:26:34.323Z"
+    }
+  },
+  "todos": {
+    "mqgnp2m7rzvqpu": {
+      "text": "1",
+      "date": "2026-06-17",
+      "done": true,
+      "createdBy": "default",
+      "createdAt": "2026-06-16T13:06:50.623Z",
+      "lastEditedBy": "default",
+      "lastEditedAt": "2026-06-16T13:08:10.952Z",
+      "_id": "mqgnp2m7rzvqpu",
+      "_key": "mqgnp2m7rzvqpu"
+    },
+    "mqgnxbrff63am0": {
+      "text": "2",
+      "date": "2026-06-17",
+      "done": false,
+      "createdBy": "default",
+      "createdAt": "2026-06-16T13:13:15.723Z",
+      "lastEditedBy": "default",
+      "lastEditedAt": "2026-06-16T13:13:15.723Z",
+      "_id": "mqgnxbrff63am0",
+      "_key": "mqgnxbrff63am0"
+    },
+    "mqgoid8c4iq88e": {
+      "text": "4545",
+      "date": "2026-06-16",
+      "done": false,
+      "createdBy": "default",
+      "createdAt": "2026-06-16T13:29:37.404Z",
+      "lastEditedBy": "default",
+      "lastEditedAt": "2026-06-16T13:29:37.404Z",
+      "_id": "mqgoid8c4iq88e"
+    }
+  },
+  "countdowns": {
+    "mqgojlr6yytk9c": {
+      "name": "测试",
+      "date": "2026-06-18",
+      "createdBy": "default",
+      "createdAt": "2026-06-16T13:30:35.106Z",
+      "lastEditedBy": "default",
+      "lastEditedAt": "2026-06-16T13:30:35.106Z"
+    }
+  },
+  "music": []
+}
