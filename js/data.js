@@ -1,8 +1,7 @@
-/* ========== Data Layer — GitHub + IndexedDB 混合 ==========
-   所有人共享同一份数据，存储在仓库的 data/data.json
-   IndexedDB 作为本地缓存加速读取
-   上传照片存为 data/photos/{id}.jpg，通过 GitHub API 写入
-   需要设置页中填入 GitHub Token
+/* ========== Data Layer — GitHub + localStorage 双通道 ==========
+   优先从 GitHub 读取，所有人共享数据
+   如果 GitHub 不可用（首次/离线）则降级到 localStorage
+   写入时同时写入 GitHub 和 localStorage
 */
 
 var Data = {};
@@ -14,10 +13,12 @@ Data.GITHUB_BRANCH = 'main';
 Data.DATA_FILE = 'data/data.json';
 
 Data.cache = null;
-Data.initialized = false;
+Data.ghReady = false;
 Data.onReady = [];
 
-// ---- Mood Options ----
+Data.LS_KEY = 'my_homepage_data';
+
+// ---- 配置 ----
 Data.MOODS = [
   { id: 'happy', emoji: '\u{1F60A}', label: '开心' },
   { id: 'calm', emoji: '\u{1F60C}', label: '平静' },
@@ -28,7 +29,6 @@ Data.MOODS = [
   { id: 'love', emoji: '\u{1F970}', label: '甜蜜' },
   { id: 'anxious', emoji: '\u{1F630}', label: '焦虑' }
 ];
-
 Data.THEMES = [
   { id: 'midnight', name: 'Midnight', color: '#7c5cbf' },
   { id: 'aurora', name: 'Aurora', color: '#2ecc71' },
@@ -39,33 +39,19 @@ Data.THEMES = [
   { id: 'forest', name: 'Forest', color: '#27ae60' },
   { id: 'minimal', name: 'Minimal', color: '#555555' }
 ];
-
 Data.DEFAULT_AVATARS = ['\u{1F600}', '\u{1F60E}', '\u{1F60A}', '\u{1F60B}', '\u{1F60C}', '\u{1F60D}', '\u{1F61C}', '\u{1F60F}', '\u{1F636}', '\u{1F92A}', '\u{1F600}'];
 
 Data.getDefaultData = function() {
   return {
     users: {
       default: {
-        id: 'default',
-        nickname: '我',
-        avatar: '\u{1F60A}',
-        avatarType: 'emoji',
-        createdAt: new Date().toISOString()
+        id: 'default', nickname: '我', avatar: '\u{1F60A}',
+        avatarType: 'emoji', createdAt: new Date().toISOString()
       }
     },
-    currentUser: 'default',
-    theme: 'midnight',
-    settings: {
-      autoPlay: false,
-      cardOpacity: 80,
-      cardFrost: 60,
-      backgroundPhotos: [],
-      activeBackground: ''
-    },
-    notes: {},
-    todos: {},
-    countdowns: {},
-    music: []
+    currentUser: 'default', theme: 'midnight',
+    settings: { autoPlay: false, cardOpacity: 80, cardFrost: 60, backgroundPhotos: [], activeBackground: '' },
+    notes: {}, todos: {}, countdowns: {}, music: []
   };
 };
 
@@ -75,24 +61,17 @@ Data.setGitHubConfig = function(owner, repo, token) {
   Data.GITHUB_OWNER = owner;
   Data.GITHUB_REPO = repo;
   Data.GITHUB_TOKEN = token;
-  // Save to localStorage so it persists
-  try {
-    localStorage.setItem('gh_config', JSON.stringify({ owner: owner, repo: repo, token: token }));
-  } catch (e) {}
+  try { localStorage.setItem('gh_config', JSON.stringify({ owner: owner, repo: repo, token: token })); } catch (e) {}
 };
 
 Data.getGitHubConfig = function() {
-  if (Data.GITHUB_OWNER) {
-    return { owner: Data.GITHUB_OWNER, repo: Data.GITHUB_REPO, token: Data.GITHUB_TOKEN };
-  }
+  if (Data.GITHUB_OWNER) return { owner: Data.GITHUB_OWNER, repo: Data.GITHUB_REPO, token: Data.GITHUB_TOKEN };
   try {
     var raw = localStorage.getItem('gh_config');
     if (raw) {
-      var cfg = JSON.parse(raw);
-      Data.GITHUB_OWNER = cfg.owner;
-      Data.GITHUB_REPO = cfg.repo;
-      Data.GITHUB_TOKEN = cfg.token;
-      return cfg;
+      var c = JSON.parse(raw);
+      Data.GITHUB_OWNER = c.owner; Data.GITHUB_REPO = c.repo; Data.GITHUB_TOKEN = c.token;
+      return c;
     }
   } catch (e) {}
   return null;
@@ -102,34 +81,30 @@ Data.isGitHubConfigured = function() {
   return !!(Data.GITHUB_OWNER && Data.GITHUB_REPO && Data.GITHUB_TOKEN);
 };
 
-Data.githubApi = function(method, endpoint, body, callback) {
+Data.githubFetch = function(method, endpoint, body, callback) {
   var cfg = Data.getGitHubConfig();
-  if (!cfg) { if (callback) callback('未配置 GitHub Token'); return; }
+  if (!cfg) { if (callback) callback('未配置'); return; }
   var url = 'https://api.github.com/repos/' + cfg.owner + '/' + cfg.repo + '/' + endpoint;
   var xhr = new XMLHttpRequest();
   xhr.open(method, url, true);
   xhr.setRequestHeader('Authorization', 'Bearer ' + cfg.token);
   xhr.setRequestHeader('Accept', 'application/vnd.github.v3+json');
-  if (body) {
-    xhr.setRequestHeader('Content-Type', 'application/json');
-  }
-  xhr.onload = function() {
-    if (callback) callback(null, xhr);
-  };
-  xhr.onerror = function() {
-    if (callback) callback('网络错误');
-  };
+  if (body) xhr.setRequestHeader('Content-Type', 'application/json');
+  xhr.onload = function() { if (callback) callback(null, xhr); };
+  xhr.onerror = function() { if (callback) callback('网络错误'); };
   xhr.send(body ? JSON.stringify(body) : null);
 };
 
-// ===== Read data from GitHub =====
+// ===== 从 GitHub 读取 =====
 
 Data.fetchFromGitHub = function(callback) {
-  Data.githubApi('GET', 'contents/' + Data.DATA_FILE, null, function(err, xhr) {
-    if (err || xhr.status === 404) {
-      // File doesn't exist yet — start fresh
-      Data.cache = Data.getDefaultData();
-      if (callback) callback(Data.cache);
+  if (!Data.isGitHubConfigured()) {
+    if (callback) callback(null);
+    return;
+  }
+  Data.githubFetch('GET', 'contents/' + Data.DATA_FILE, null, function(err, xhr) {
+    if (err || !xhr || xhr.status === 404) {
+      if (callback) callback(null);
       return;
     }
     if (xhr.status === 200) {
@@ -137,73 +112,51 @@ Data.fetchFromGitHub = function(callback) {
         var resp = JSON.parse(xhr.responseText);
         var content = atob(resp.content);
         Data.cache = JSON.parse(content);
-        // Cache sha for later updates
         Data.fileSha = resp.sha;
+        Data.ghReady = true;
+        // sync to localStorage for fallback
+        try { localStorage.setItem(Data.LS_KEY, content); } catch (e) {}
         if (callback) callback(Data.cache);
-      } catch (e) {
-        Data.cache = Data.getDefaultData();
-        if (callback) callback(Data.cache);
-      }
-    } else {
-      Data.cache = Data.getDefaultData();
-      if (callback) callback(Data.cache);
+        return;
+      } catch (e) {}
     }
+    if (callback) callback(null);
   });
 };
 
-Data.fileSha = null; // SHA of current data file on GitHub, needed for updates
+Data.fileSha = null;
 
-// ===== Write data to GitHub =====
+// ===== 写入 GitHub =====
 
 Data.saveToGitHub = function(data, callback) {
-  Data.cache = data;
+  if (!Data.isGitHubConfigured()) { if (callback) callback(); return; }
   var content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
-  var body = {
-    message: '更新数据 ' + new Date().toISOString().slice(0, 16),
-    content: content,
-    branch: 'main'
-  };
+  var body = { message: '更新 ' + new Date().toISOString().slice(0, 16), content: content, branch: 'main' };
   if (Data.fileSha) body.sha = Data.fileSha;
-
-  Data.githubApi('PUT', 'contents/' + Data.DATA_FILE, body, function(err, xhr) {
+  Data.githubFetch('PUT', 'contents/' + Data.DATA_FILE, body, function(err, xhr) {
     if (xhr && xhr.status === 201) {
-      // Update sha from response
-      try {
-        var resp = JSON.parse(xhr.responseText);
-        Data.fileSha = resp.content.sha;
-      } catch (e) {}
-      if (callback) callback(null);
-    } else if (xhr && xhr.status === 422) {
-      // sha mismatch — re-fetch and retry once
-      Data.fetchFromGitHub(function() {
-        Data.saveToGitHub(data, callback);
-      });
-    } else {
-      if (callback) callback('保存失败: ' + (xhr ? xhr.statusText : ''));
+      try { Data.fileSha = JSON.parse(xhr.responseText).content.sha; } catch (e) {}
     }
+    if (callback) callback();
   });
 };
 
-// ===== Upload photo file to GitHub =====
+// ===== 上传照片到 GitHub =====
 
 Data.uploadPhotoToGitHub = function(photoId, base64Data, callback) {
-  // Strip data:image/...;base64, prefix
+  if (!Data.isGitHubConfigured()) { if (callback) callback('未配置'); return; }
   var parts = base64Data.split(',');
-  var mimeType = 'image/png';
-  if (base64Data.indexOf('image/jpeg') > 0) mimeType = 'image/jpeg';
-  if (base64Data.indexOf('image/webp') > 0) mimeType = 'image/webp';
-  if (base64Data.indexOf('image/gif') > 0) mimeType = 'image/gif';
-  var rawData = parts.length > 1 ? parts[1] : base64Data;
-
-  var path = 'data/photos/' + photoId + '.' + (mimeType === 'image/png' ? 'png' : 'jpg');
-  var body = {
-    message: '上传照片 ' + photoId,
-    content: rawData,
-    branch: 'main'
-  };
-  Data.githubApi('PUT', 'contents/' + path, body, function(err, xhr) {
+  var mime = 'image/png';
+  if (base64Data.indexOf('jpeg') > 0) mime = 'image/jpeg';
+  if (base64Data.indexOf('webp') > 0) mime = 'image/webp';
+  if (base64Data.indexOf('gif') > 0) mime = 'image/gif';
+  var raw = parts.length > 1 ? parts[1] : base64Data;
+  var ext = mime === 'image/png' ? 'png' : 'jpg';
+  var path = 'data/photos/' + photoId + '.' + ext;
+  Data.githubFetch('PUT', 'contents/' + path, {
+    message: '上传照片 ' + photoId, content: raw, branch: 'main'
+  }, function(err, xhr) {
     if (xhr && xhr.status === 201) {
-      // Return the raw GitHub URL
       var url = 'https://raw.githubusercontent.com/' + Data.GITHUB_OWNER + '/' + Data.GITHUB_REPO + '/main/' + path;
       if (callback) callback(null, url, path);
     } else {
@@ -213,173 +166,139 @@ Data.uploadPhotoToGitHub = function(photoId, base64Data, callback) {
 };
 
 Data.deletePhotoFromGitHub = function(path, callback) {
-  Data.githubApi('GET', 'contents/' + path, null, function(err, xhr) {
+  if (!Data.isGitHubConfigured()) { if (callback) callback(); return; }
+  Data.githubFetch('GET', 'contents/' + path, null, function(err, xhr) {
     if (xhr && xhr.status === 200) {
       try {
         var resp = JSON.parse(xhr.responseText);
-        var body = { message: '删除照片', sha: resp.sha, branch: 'main' };
-        Data.githubApi('DELETE', 'contents/' + path, body, function(err2, xhr2) {
-          if (callback) callback(err2);
-        });
-      } catch (e) { if (callback) callback('解析错误'); }
-    } else { if (callback) callback('未找到文件'); }
+        Data.githubFetch('DELETE', 'contents/' + path, { message: '删除照片', sha: resp.sha, branch: 'main' });
+      } catch (e) {}
+    }
   });
 };
 
-// ===== load / save — to be called after GitHub sync =====
+// ===== 核心：load / save（双通道） =====
 
 Data.load = function() {
-  return Data.cache || Data.getDefaultData();
+  // 优先使用内存缓存
+  if (Data.cache) return Data.cache;
+  // 其次读 localStorage（之前存的数据）
+  try {
+    var raw = localStorage.getItem(Data.LS_KEY);
+    if (raw) {
+      Data.cache = JSON.parse(raw);
+      return Data.cache;
+    }
+  } catch (e) {}
+  // 最后返回默认
+  Data.cache = Data.getDefaultData();
+  return Data.cache;
 };
 
 Data.save = function(data) {
   Data.cache = data;
-  // Sync to GitHub in background
-  Data.saveToGitHub(data);
+  // 立即写入 localStorage（即时生效）
+  try { localStorage.setItem(Data.LS_KEY, JSON.stringify(data)); } catch (e) {}
+  // 异步同步到 GitHub（不阻塞）
+  if (Data.isGitHubConfigured()) {
+    Data.saveToGitHub(data);
+  }
 };
 
-// ===== Ready system: wait for GitHub data before booting =====
+// ===== 启动流程：先读本地，再尝试 GitHub 同步 =====
 
 Data.ready = function(callback) {
-  if (Data.initialized) {
-    callback(Data.cache);
-    return;
-  }
   Data.onReady.push(callback);
-  if (!Data.initialized) {
-    Data.initialized = true;
-    Data.init();
-  }
-};
+  if (Data._starting) return;
+  Data._starting = true;
 
-Data.init = function() {
-  Data.fetchFromGitHub(function(data) {
-    Data.cache = data;
-    var onReady = Data.onReady;
-    Data.onReady = [];
-    for (var i = 0; i < onReady.length; i++) {
-      onReady[i](data);
+  // 第一步：立即加载本地数据，让页面先展示
+  var localData = Data.load();
+  for (var i = 0; i < Data.onReady.length; i++) {
+    Data.onReady[i](localData);
+  }
+
+  // 第二步：尝试从 GitHub 拉取最新数据（覆盖本地）
+  Data.fetchFromGitHub(function(ghData) {
+    if (ghData) {
+      Data.cache = ghData;
+      // 重新初始化所有模块
+      App.reinit();
     }
   });
 };
 
-// ===== Utility =====
+// ===== 图片路径修复：如果是旧数据(base64)，保持原样；如果是 GitHub URL 直接使用 =====
+
+Data.resolvePhotoUrl = function(data) {
+  if (!data) return '';
+  // 如果是 GitHub raw URL 或 data URL，直接返回
+  if (data.indexOf('http') === 0 || data.indexOf('data:') === 0) return data;
+  // 否则作为路径处理
+  return data;
+};
+
+// ===== 工具函数 =====
 
 Data.currentUser = function() {
-  var d = Data.load();
-  return d.currentUser || 'default';
+  var d = Data.load(); return d.currentUser || 'default';
 };
-
 Data.getUser = function(userId) {
-  var d = Data.load();
-  return d.users[userId] || d.users['default'];
+  var d = Data.load(); return d.users[userId] || d.users['default'];
 };
-
 Data.getUserDisplay = function(userId) {
   var u = Data.getUser(userId);
-  if (!u) return { nickname: '?', avatar: '\u{1F600}', avatarType: 'emoji' };
-  return u;
+  return u || { nickname: '?', avatar: '\u{1F600}', avatarType: 'emoji' };
 };
-
 Data.generateId = function() {
   return Date.now().toString(36) + Math.random().toString(36).substr(2, 6);
 };
-
-Data.now = function() {
-  return new Date().toISOString();
-};
+Data.now = function() { return new Date().toISOString(); };
 
 Data.getToday = function() {
   var d = Data.load();
-  var today = new Date();
-  var y = today.getFullYear();
-  var m = String(today.getMonth() + 1).padStart(2, '0');
-  var day = String(today.getDate()).padStart(2, '0');
-  var dateStr = y + '-' + m + '-' + day;
-  var notes = [];
-  var dNotes = d.notes || {};
-  for (var key in dNotes) {
-    if (dNotes.hasOwnProperty(key)) {
-      var n = dNotes[key];
-      if (n.createdAt && n.createdAt.indexOf(dateStr) === 0) notes.push(n);
-    }
-  }
-  var todos = [];
-  var dTodos = d.todos || {};
-  for (var key2 in dTodos) {
-    if (dTodos.hasOwnProperty(key2)) {
-      var t = dTodos[key2];
-      if (t.date === dateStr) todos.push(t);
-    }
-  }
+  var now = new Date();
+  var ds = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0');
+  var notes = [], todos = [];
+  for (var k in (d.notes||{})) if (d.notes.hasOwnProperty(k) && d.notes[k].createdAt && d.notes[k].createdAt.indexOf(ds)===0) notes.push(d.notes[k]);
+  for (var k2 in (d.todos||{})) if (d.todos.hasOwnProperty(k2) && d.todos[k2].date === ds) todos.push(d.todos[k2]);
   return { notes: notes, todos: todos };
 };
 
 Data.getActivity = function(limit) {
   limit = limit || 20;
-  var d = Data.load();
-  var activities = [];
-  var dNotes = d.notes || {};
-  for (var key in dNotes) {
-    if (dNotes.hasOwnProperty(key)) {
-      var n = dNotes[key];
-      activities.push({ type: 'note', text: n.text, time: n.createdAt, userId: n.createdBy, id: key });
-      if (n.lastEditedAt && n.lastEditedAt !== n.createdAt) {
-        activities.push({ type: 'edit', text: n.text, time: n.lastEditedAt, userId: n.lastEditedBy, id: key });
-      }
-    }
+  var d = Data.load(), acts = [];
+  for (var k in (d.notes||{})) if (d.notes.hasOwnProperty(k)) {
+    var n = d.notes[k]; acts.push({ type:'note', text:n.text, time:n.createdAt, userId:n.createdBy, id:k });
+    if (n.lastEditedAt && n.lastEditedAt !== n.createdAt) acts.push({ type:'edit', text:n.text, time:n.lastEditedAt, userId:n.lastEditedBy, id:k });
   }
-  var dTodos = d.todos || {};
-  for (var key2 in dTodos) {
-    if (dTodos.hasOwnProperty(key2)) {
-      var t = dTodos[key2];
-      activities.push({ type: 'todo', text: t.text, time: t.createdAt, userId: t.createdBy, id: key2 });
-    }
-  }
-  var dCount = d.countdowns || {};
-  for (var key3 in dCount) {
-    if (dCount.hasOwnProperty(key3)) {
-      var c = dCount[key3];
-      activities.push({ type: 'countdown', text: c.name, time: c.createdAt, userId: c.createdBy, id: key3 });
-    }
-  }
-  activities.sort(function(a, b) { return b.time.localeCompare(a.time); });
-  return activities.slice(0, limit);
+  for (var k2 in (d.todos||{})) if (d.todos.hasOwnProperty(k2)) { var t=d.todos[k2]; acts.push({ type:'todo', text:t.text, time:t.createdAt, userId:t.createdBy, id:k2 }); }
+  for (var k3 in (d.countdowns||{})) if (d.countdowns.hasOwnProperty(k3)) { var c=d.countdowns[k3]; acts.push({ type:'countdown', text:c.name, time:c.createdAt, userId:c.createdBy, id:k3 }); }
+  acts.sort(function(a,b){return b.time.localeCompare(a.time);});
+  return acts.slice(0, limit);
 };
 
 Data.exportData = function() {
   var d = Data.load();
-  var blob = new Blob([JSON.stringify(d, null, 2)], { type: 'application/json' });
+  var blob = new Blob([JSON.stringify(d,null,2)], {type:'application/json'});
   var url = URL.createObjectURL(blob);
-  var a = document.createElement('a');
-  a.href = url;
-  a.download = 'my_homepage_data_' + new Date().toISOString().slice(0, 10) + '.json';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-  Toast.show('数据导出成功', 'success');
+  var a = document.createElement('a'); a.href=url; a.download='xy_data_'+new Date().toISOString().slice(0,10)+'.json';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+  Toast.show('数据导出成功','success');
 };
 
 Data.importData = function(event) {
-  var file = event.target.files[0];
-  if (!file) return;
+  var file = event.target.files[0]; if (!file) return;
   var reader = new FileReader();
   reader.onload = function(e) {
     try {
       var imported = JSON.parse(e.target.result);
       if (imported.users && imported.notes !== undefined) {
-        Data.cache = imported;
-        Data.save(imported);
-        Toast.show('数据导入成功，正在同步到 GitHub...', 'success');
+        Data.cache = imported; Data.save(imported);
+        Toast.show('数据导入成功，正在同步...','success');
         App.init();
-      } else {
-        Toast.show('数据格式无效', 'error');
-      }
-    } catch (err) {
-      Toast.show('导入失败', 'error');
-    }
+      } else { Toast.show('数据格式无效','error'); }
+    } catch (err) { Toast.show('导入失败','error'); }
   };
-  reader.readAsText(file);
-  event.target.value = '';
+  reader.readAsText(file); event.target.value='';
 };

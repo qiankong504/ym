@@ -1,36 +1,204 @@
-/* ========== Custom Modal (Glassmorphism) ========== */
+/* ========== Modal (玻璃拟态) ========== */
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   z-index: 200;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  padding: 16px;
 }
 
 .modal-container {
-  max-width: 92vw;
+  width: 100%;
+  max-width: 480px;
   max-height: 80vh;
   overflow-y: auto;
   cursor: default;
 }
 
 .modal {
-  background: rgba(22, 20, 45, 0.65);
-  backdrop-filter: blur(28px);
-  -webkit-backdrop-filter: blur(28px);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  padding: 28px;
+  background: rgba(18, 16, 35, 0.88);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(139, 108, 207, 0.2);
+  border-radius: 20px;
+  padding: 28px 24px;
   box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
   animation: modalIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @keyframes modalIn {
-  from { opacity: 0; transform: scale(0.92) translateY(16px); }
+  from { opacity: 0; transform: scale(0.94) translateY(20px); }
   to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.modal h3 {
+  font-size: 18px;
+  margin-bottom: 18px;
+  color: #e8e4f0;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+.modal label {
+  display: block;
+  font-size: 11px;
+  color: #8a84a8;
+  margin-bottom: 5px;
+  margin-top: 14px;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.modal input[type="text"],
+.modal input[type="date"],
+.modal textarea,
+.modal select {
+  width: 100%;
+  padding: 11px 14px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(139, 108, 207, 0.2);
+  border-radius: 10px;
+  color: #f0ecf8;
+  font-size: 14px;
+  font-family: 'Inter', 'SF Pro Display', -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  outline: none;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.modal input[type="text"]:focus,
+.modal input[type="date"]:focus,
+.modal textarea:focus,
+.modal select:focus {
+  border-color: #8b6ccf;
+  box-shadow: 0 0 0 3px rgba(139, 108, 207, 0.15);
+}
+
+.modal input[type="text"]::placeholder,
+.modal textarea::placeholder {
+  color: #5a5478;
+}
+
+.modal textarea {
+  min-height: 90px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.modal .btn-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  justify-content: flex-end;
+}
+
+/* 情绪选择器 */
+.modal .mood-selector {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.modal .mood-option {
+  padding: 8px 14px;
+  border: 1px solid rgba(139, 108, 207, 0.15);
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 22px;
+  background: rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+  line-height: 1;
+}
+
+.modal .mood-option:hover {
+  border-color: #8b6ccf;
+  transform: translateY(-2px);
+  background: rgba(139, 108, 207, 0.1);
+}
+
+.modal .mood-option.selected {
+  border-color: #8b6ccf;
+  background: rgba(139, 108, 207, 0.2);
+  box-shadow: 0 4px 16px rgba(139, 108, 207, 0.2);
+}
+
+/* 照片上传 */
+.modal .photo-upload-area {
+  margin-top: 4px;
+}
+
+.modal .photo-upload-area input[type="file"] {
+  display: none;
+}
+
+.modal .photo-preview {
+  max-width: 200px;
+  max-height: 150px;
+  border-radius: 10px;
+  margin-top: 8px;
+  cursor: pointer;
+  border: 1px solid rgba(139, 108, 207, 0.15);
+}
+
+/* 头像选择 */
+.modal .avatar-options {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.modal .avatar-emoji-grid {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.modal .avatar-emoji-option {
+  font-size: 26px;
+  padding: 6px 10px;
+  border: 1px solid rgba(139, 108, 207, 0.15);
+  border-radius: 10px;
+  cursor: pointer;
+  background: rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+  line-height: 1;
+}
+
+.modal .avatar-emoji-option:hover {
+  border-color: #8b6ccf;
+  transform: translateY(-1px);
+}
+
+.modal .avatar-emoji-option.selected {
+  border-color: #8b6ccf;
+  background: rgba(139, 108, 207, 0.2);
+}
+
+.modal .avatar-preview {
+  font-size: 42px;
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.3);
+  border: 2px solid rgba(139, 108, 207, 0.2);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.modal .avatar-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }

@@ -29,20 +29,13 @@ Settings.saveGitHubConfig = function() {
   }
   Data.setGitHubConfig(owner.value.trim(), repo.value.trim(), token.value.trim());
   // Re-init to fetch data from GitHub
-  Data.initialized = false;
+  Data._starting = false;
   Data.cache = null;
   var st = document.getElementById('gh-status');
   if (st) st.textContent = '✅ 配置已保存，正在同步...';
+  // 重新从 GitHub 拉数据
   Data.ready(function() {
     if (st) st.textContent = '✅ 同步成功！';
-    // Reload current page
-    Settings.renderBgPhotos();
-    Settings.restoreBgPhoto();
-    Dashboard.renderToday();
-    Dashboard.renderActivity();
-    Calendar.render();
-    Notes.render();
-    Countdown.render();
   });
 };
 

@@ -77,6 +77,12 @@
   color: var(--text-primary);
 }
 
+.setting-item input[type="text"],
+.setting-item input[type="password"] {
+  font-family: 'Inter', 'SF Pro Display', -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font-size: 13px;
+}
+
 /* Toggle Switch */
 .switch {
   position: relative;
@@ -206,7 +212,7 @@
   color: #ff6b6b;
 }
 
-/* ===== Background Photo Manager ===== */
+/* Background Photo Grid */
 .bg-photo-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
@@ -289,16 +295,11 @@
   background: rgba(255, 50, 50, 1);
 }
 
-.bg-photo-upload-btn {
-  width: 100%;
-  justify-content: center;
-}
-
-/* ===== Range Slider ===== */
+/* Range Slider */
 .range-slider {
   -webkit-appearance: none;
   appearance: none;
-  width: 160px;
+  width: 140px;
   height: 5px;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 3px;
