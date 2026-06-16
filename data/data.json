@@ -2,8 +2,8 @@
   "users": {
     "default": {
       "id": "default",
-      "nickname": "我",
-      "avatar": "😊",
+      "nickname": "æ",
+      "avatar": "ð",
       "avatarType": "emoji",
       "createdAt": "2026-06-16T13:06:42.680Z"
     }
@@ -17,7 +17,17 @@
     "backgroundPhotos": [],
     "activeBackground": ""
   },
-  "notes": {},
+  "notes": {
+    "mqgnpwsh89itte": {
+      "text": "第一版",
+      "mood": "calm",
+      "photo": "",
+      "createdBy": "default",
+      "createdAt": "2026-06-16T13:07:29.729Z",
+      "lastEditedBy": "default",
+      "lastEditedAt": "2026-06-16T13:07:29.729Z"
+    }
+  },
   "todos": {
     "mqgnp2m7rzvqpu": {
       "text": "1",
@@ -27,7 +37,8 @@
       "createdAt": "2026-06-16T13:06:50.623Z",
       "lastEditedBy": "default",
       "lastEditedAt": "2026-06-16T13:06:50.623Z",
-      "_id": "mqgnp2m7rzvqpu"
+      "_id": "mqgnp2m7rzvqpu",
+      "_key": "mqgnp2m7rzvqpu"
     }
   },
   "countdowns": {},
