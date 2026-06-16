@@ -3,19 +3,26 @@
     "default": {
       "id": "default",
       "nickname": "1",
-      "avatar": "ÃÂ°ÃÂÃÂÃÂ",
+      "avatar": "Ã°ÂÂÂ",
       "avatarType": "emoji",
       "createdAt": "2026-06-16T13:06:42.680Z"
     }
   },
   "currentUser": "default",
-  "theme": "aurora",
+  "theme": "midnight",
   "settings": {
     "autoPlay": false,
     "cardOpacity": 80,
     "cardFrost": 60,
-    "backgroundPhotos": [],
-    "activeBackground": ""
+    "backgroundPhotos": [
+      {
+        "id": "mqgo8g7jd5bhw4",
+        "name": "Screenshot_20260616_154825.jpg",
+        "data": "https://raw.githubusercontent.com/qiankong504/ym/main/data/photos/mqgo8g7jd5bhw4.jpg",
+        "path": "data/photos/mqgo8g7jd5bhw4.jpg"
+      }
+    ],
+    "activeBackground": "https://raw.githubusercontent.com/qiankong504/ym/main/data/photos/mqgo8g7jd5bhw4.jpg"
   },
   "notes": {
     "mqgnpwsh89itte": {
@@ -28,14 +35,23 @@
       "lastEditedAt": "2026-06-16T13:10:35.873Z",
       "_id": "mqgnpwsh89itte"
     },
-    "mqgo4amazd0vhl": {
-      "text": "33",
-      "mood": "angry",
+    "mqgnxsig34wxif": {
+      "text": "啊",
+      "mood": "happy",
       "photo": "",
       "createdBy": "default",
-      "createdAt": "2026-06-16T13:18:40.834Z",
+      "createdAt": "2026-06-16T13:13:37.432Z",
       "lastEditedBy": "default",
-      "lastEditedAt": "2026-06-16T13:18:40.834Z"
+      "lastEditedAt": "2026-06-16T13:13:37.432Z"
+    },
+    "mqgo7049ez2lu7": {
+      "text": "4",
+      "mood": "sad",
+      "photo": "",
+      "createdBy": "default",
+      "createdAt": "2026-06-16T13:20:47.193Z",
+      "lastEditedBy": "default",
+      "lastEditedAt": "2026-06-16T13:20:47.193Z"
     }
   },
   "todos": {
@@ -58,7 +74,8 @@
       "createdAt": "2026-06-16T13:13:15.723Z",
       "lastEditedBy": "default",
       "lastEditedAt": "2026-06-16T13:13:15.723Z",
-      "_id": "mqgnxbrff63am0"
+      "_id": "mqgnxbrff63am0",
+      "_key": "mqgnxbrff63am0"
     }
   },
   "countdowns": {},
