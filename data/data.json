@@ -152,6 +152,16 @@
       "_key": "mqgp11p4viwzoy"
     }
   },
-  "countdowns": {},
+  "countdowns": {
+    "mqgq1f11tsvq4s": {
+      "name": "有",
+      "date": "2026-06-19",
+      "createdBy": "default",
+      "createdAt": "2026-06-16T14:12:25.813Z",
+      "lastEditedBy": "default",
+      "lastEditedAt": "2026-06-16T14:12:25.813Z",
+      "_id": "mqgq1f11tsvq4s"
+    }
+  },
   "music": []
 }
