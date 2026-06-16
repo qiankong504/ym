@@ -3,9 +3,9 @@
 var App = {};
 
 App.init = function() {
-  // Data.ready 会先加载本地数据，再异步从 GitHub 同步
-  // 所以页面会先显示本地数据，不会空白
-  Data.ready(function() {
+  // Data.boot 会先加载 localStorage 数据（即时），再后台拉 GitHub（异步）
+  // 这样页面永远不会空白
+  Data.boot(function() {
     Themes.init();
     Sidebar.updateUser();
     Settings.restoreBgPhoto();
@@ -19,21 +19,18 @@ App.init = function() {
   });
 };
 
-// 当 GitHub 同步完成后，重新刷新页面内容
+// GitHub 同步完成后刷新页面内容
 App.reinit = function() {
-  var page = document.querySelector('.page.active');
-  var id = page ? page.id.replace('page-', '') : 'dashboard';
-  Themes.apply(Data.load().theme || 'midnight');
-  Sidebar.updateUser();
   Settings.restoreBgPhoto();
-  Dashboard.init();
-  Calendar.init();
-  Notes.init();
+  Dashboard.renderToday();
+  Dashboard.renderActivity();
+  Calendar.render();
+  Notes.render();
   Countdown.render();
   Music.renderList();
   Settings.renderBgPhotos();
-  Settings.restoreGitHubConfig();
-  Router.navigate(id);
+  Settings.restoreCardOpacity();
+  Settings.restoreCardFrost();
   Toast.show('已同步最新数据', 'success');
 };
 

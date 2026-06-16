@@ -1,24 +1,23 @@
-/* ========== Data Layer — GitHub + localStorage 双通道 ==========
-   优先从 GitHub 读取，所有人共享数据
-   如果 GitHub 不可用（首次/离线）则降级到 localStorage
-   写入时同时写入 GitHub 和 localStorage
+/* ========== Data Layer v3 — localStorage 主力 + GitHub 异步同步 ==========
+   1. 所有数据优先读写 localStorage（即时、可靠）
+   2. GitHub 同步在后台进行，不阻塞任何操作
+   3. 无论 Token/GitHub 什么状态，页面永远正常显示
 */
 
 var Data = {};
 
-Data.GITHUB_OWNER = '';
-Data.GITHUB_REPO = '';
-Data.GITHUB_TOKEN = '';
-Data.GITHUB_BRANCH = 'main';
-Data.DATA_FILE = 'data/data.json';
-
-Data.cache = null;
-Data.ghReady = false;
-Data.onReady = [];
-
+// localStorage key
 Data.LS_KEY = 'my_homepage_data';
 
-// ---- 配置 ----
+// GitHub 配置（可选）
+Data.GH_OWNER = '';
+Data.GH_REPO = '';
+Data.GH_TOKEN = '';
+Data.GH_BRANCH = 'main';
+Data.GH_FILE = 'data/data.json';
+Data.GH_SHA = null;
+
+// ---- 常量 ----
 Data.MOODS = [
   { id: 'happy', emoji: '\u{1F60A}', label: '开心' },
   { id: 'calm', emoji: '\u{1F60C}', label: '平静' },
@@ -42,48 +41,120 @@ Data.THEMES = [
 Data.DEFAULT_AVATARS = ['\u{1F600}', '\u{1F60E}', '\u{1F60A}', '\u{1F60B}', '\u{1F60C}', '\u{1F60D}', '\u{1F61C}', '\u{1F60F}', '\u{1F636}', '\u{1F92A}', '\u{1F600}'];
 
 Data.getDefaultData = function() {
+  var now = new Date().toISOString();
   return {
-    users: {
-      default: {
-        id: 'default', nickname: '我', avatar: '\u{1F60A}',
-        avatarType: 'emoji', createdAt: new Date().toISOString()
-      }
-    },
-    currentUser: 'default', theme: 'midnight',
+    users: { default: { id: 'default', nickname: '我', avatar: '\u{1F60A}', avatarType: 'emoji', createdAt: now } },
+    currentUser: 'default',
+    theme: 'midnight',
     settings: { autoPlay: false, cardOpacity: 80, cardFrost: 60, backgroundPhotos: [], activeBackground: '' },
-    notes: {}, todos: {}, countdowns: {}, music: []
+    notes: {},
+    todos: {},
+    countdowns: {},
+    music: []
   };
 };
 
-// ===== GitHub API =====
+// ===== 核心：load / save（永远可靠） =====
 
-Data.setGitHubConfig = function(owner, repo, token) {
-  Data.GITHUB_OWNER = owner;
-  Data.GITHUB_REPO = repo;
-  Data.GITHUB_TOKEN = token;
-  try { localStorage.setItem('gh_config', JSON.stringify({ owner: owner, repo: repo, token: token })); } catch (e) {}
+Data.load = function() {
+  try {
+    var raw = localStorage.getItem(Data.LS_KEY);
+    if (raw) {
+      var parsed = JSON.parse(raw);
+      // 确保必要字段存在
+      if (parsed.notes !== undefined && parsed.users !== undefined) {
+        return parsed;
+      }
+    }
+  } catch (e) {}
+  return Data.getDefaultData();
 };
 
-Data.getGitHubConfig = function() {
-  if (Data.GITHUB_OWNER) return { owner: Data.GITHUB_OWNER, repo: Data.GITHUB_REPO, token: Data.GITHUB_TOKEN };
+Data.save = function(data) {
+  try {
+    localStorage.setItem(Data.LS_KEY, JSON.stringify(data));
+  } catch (e) {
+    // localStorage 可能满，忽略
+  }
+  // 异步备份到 GitHub（不阻塞，失败不影响页面）
+  if (Data.isGHAvailable()) {
+    setTimeout(function() { Data._syncToGH(data); }, 100);
+  }
+};
+
+// 启动时调用：读取本地数据后，尝试从 GitHub 拉取最新版
+Data.boot = function(callback) {
+  var localData = Data.load();
+  // 立即用本地数据渲染（永远优先）
+  callback(localData);
+  // 然后异步尝试 GitHub 同步
+  if (Data.isGHAvailable()) {
+    Data._fetchFromGH(function(ghData) {
+      if (ghData) {
+        // 比较本地和 GitHub，取最新的（按数据条目数估算）
+        var localCount = 0;
+        for (var k in (localData.notes||{})) if (localData.notes.hasOwnProperty(k)) localCount++;
+        for (var k2 in (localData.todos||{})) if (localData.todos.hasOwnProperty(k2)) localCount++;
+        var ghCount = 0;
+        for (var k3 in (ghData.notes||{})) if (ghData.notes.hasOwnProperty(k3)) ghCount++;
+        for (var k4 in (ghData.todos||{})) if (ghData.todos.hasOwnProperty(k4)) ghCount++;
+        // 如果 GitHub 数据更多，才覆盖本地
+        if (ghCount > localCount) {
+          Data.save(ghData);
+          if (typeof App !== 'undefined' && App.reinit) {
+            App.reinit();
+          }
+        }
+      }
+    });
+  }
+};
+
+// ===== GitHub 配置 =====
+
+Data.setGHConfig = function(owner, repo, token) {
+  Data.GH_OWNER = owner;
+  Data.GH_REPO = repo;
+  Data.GH_TOKEN = token;
+  try { localStorage.setItem('gh_config', JSON.stringify({ owner: owner, repo: repo, token: token })); } catch (e) {}
+  // 保存配置后立即从 GitHub 拉一次
+  Data._fetchFromGH(function(ghData) {
+    if (ghData) {
+      Data.save(ghData);
+      if (typeof App !== 'undefined' && App.reinit) App.reinit();
+    }
+  });
+};
+
+Data.loadGHConfig = function() {
+  if (Data.GH_OWNER) return;
   try {
     var raw = localStorage.getItem('gh_config');
     if (raw) {
       var c = JSON.parse(raw);
-      Data.GITHUB_OWNER = c.owner; Data.GITHUB_REPO = c.repo; Data.GITHUB_TOKEN = c.token;
-      return c;
+      Data.GH_OWNER = c.owner;
+      Data.GH_REPO = c.repo;
+      Data.GH_TOKEN = c.token;
     }
   } catch (e) {}
+};
+
+Data.isGHAvailable = function() {
+  Data.loadGHConfig();
+  return !!(Data.GH_OWNER && Data.GH_REPO && Data.GH_TOKEN);
+};
+
+Data.getGHConfig = function() {
+  Data.loadGHConfig();
+  if (Data.GH_OWNER) return { owner: Data.GH_OWNER, repo: Data.GH_REPO, token: Data.GH_TOKEN };
   return null;
 };
 
-Data.isGitHubConfigured = function() {
-  return !!(Data.GITHUB_OWNER && Data.GITHUB_REPO && Data.GITHUB_TOKEN);
-};
+// ===== GitHub API 请求 =====
 
-Data.githubFetch = function(method, endpoint, body, callback) {
-  var cfg = Data.getGitHubConfig();
-  if (!cfg) { if (callback) callback('未配置'); return; }
+Data._ghRequest = function(method, endpoint, body, callback) {
+  var cfg = Data.getGHConfig();
+  if (!cfg) { if (callback) callback('no_config'); return; }
   var url = 'https://api.github.com/repos/' + cfg.owner + '/' + cfg.repo + '/' + endpoint;
   var xhr = new XMLHttpRequest();
   xhr.open(method, url, true);
@@ -91,60 +162,51 @@ Data.githubFetch = function(method, endpoint, body, callback) {
   xhr.setRequestHeader('Accept', 'application/vnd.github.v3+json');
   if (body) xhr.setRequestHeader('Content-Type', 'application/json');
   xhr.onload = function() { if (callback) callback(null, xhr); };
-  xhr.onerror = function() { if (callback) callback('网络错误'); };
+  xhr.onerror = function() { if (callback) callback('network'); };
   xhr.send(body ? JSON.stringify(body) : null);
 };
 
-// ===== 从 GitHub 读取 =====
+// ===== 从 GitHub 读取数据 =====
 
-Data.fetchFromGitHub = function(callback) {
-  if (!Data.isGitHubConfigured()) {
-    if (callback) callback(null);
-    return;
-  }
-  Data.githubFetch('GET', 'contents/' + Data.DATA_FILE, null, function(err, xhr) {
-    if (err || !xhr || xhr.status === 404) {
+Data._fetchFromGH = function(callback) {
+  Data._ghRequest('GET', 'contents/' + Data.GH_FILE, null, function(err, xhr) {
+    if (err || !xhr || xhr.status !== 200) {
       if (callback) callback(null);
       return;
     }
-    if (xhr.status === 200) {
-      try {
-        var resp = JSON.parse(xhr.responseText);
-        var content = atob(resp.content);
-        Data.cache = JSON.parse(content);
-        Data.fileSha = resp.sha;
-        Data.ghReady = true;
-        // sync to localStorage for fallback
-        try { localStorage.setItem(Data.LS_KEY, content); } catch (e) {}
-        if (callback) callback(Data.cache);
+    try {
+      var resp = JSON.parse(xhr.responseText);
+      var content = decodeURIComponent(escape(atob(resp.content)));
+      var data = JSON.parse(content);
+      if (data.notes !== undefined && data.users !== undefined) {
+        Data.GH_SHA = resp.sha;
+        if (callback) callback(data);
         return;
-      } catch (e) {}
-    }
+      }
+    } catch (e) {}
     if (callback) callback(null);
   });
 };
 
-Data.fileSha = null;
-
 // ===== 写入 GitHub =====
 
-Data.saveToGitHub = function(data, callback) {
-  if (!Data.isGitHubConfigured()) { if (callback) callback(); return; }
-  var content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
-  var body = { message: '更新 ' + new Date().toISOString().slice(0, 16), content: content, branch: 'main' };
-  if (Data.fileSha) body.sha = Data.fileSha;
-  Data.githubFetch('PUT', 'contents/' + Data.DATA_FILE, body, function(err, xhr) {
-    if (xhr && xhr.status === 201) {
-      try { Data.fileSha = JSON.parse(xhr.responseText).content.sha; } catch (e) {}
+Data._syncToGH = function(data) {
+  Data._ghRequest('GET', 'contents/' + Data.GH_FILE, null, function(err, xhr) {
+    var sha = null;
+    if (xhr && xhr.status === 200) {
+      try { sha = JSON.parse(xhr.responseText).sha; } catch (e) {}
     }
-    if (callback) callback();
+    var content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
+    var body = { message: '更新 ' + new Date().toISOString().slice(0, 16), content: content, branch: 'main' };
+    if (sha) body.sha = sha;
+    Data._ghRequest('PUT', 'contents/' + Data.GH_FILE, body, function() {});
   });
 };
 
 // ===== 上传照片到 GitHub =====
 
-Data.uploadPhotoToGitHub = function(photoId, base64Data, callback) {
-  if (!Data.isGitHubConfigured()) { if (callback) callback('未配置'); return; }
+Data.uploadPhotoToGH = function(photoId, base64Data, callback) {
+  if (!Data.isGHAvailable()) { if (callback) callback('no_config'); return; }
   var parts = base64Data.split(',');
   var mime = 'image/png';
   if (base64Data.indexOf('jpeg') > 0) mime = 'image/jpeg';
@@ -153,106 +215,36 @@ Data.uploadPhotoToGitHub = function(photoId, base64Data, callback) {
   var raw = parts.length > 1 ? parts[1] : base64Data;
   var ext = mime === 'image/png' ? 'png' : 'jpg';
   var path = 'data/photos/' + photoId + '.' + ext;
-  Data.githubFetch('PUT', 'contents/' + path, {
+  Data._ghRequest('PUT', 'contents/' + path, {
     message: '上传照片 ' + photoId, content: raw, branch: 'main'
   }, function(err, xhr) {
-    if (xhr && xhr.status === 201) {
-      var url = 'https://raw.githubusercontent.com/' + Data.GITHUB_OWNER + '/' + Data.GITHUB_REPO + '/main/' + path;
+    if (!err && xhr && xhr.status === 201) {
+      var url = 'https://raw.githubusercontent.com/' + Data.GH_OWNER + '/' + Data.GH_REPO + '/main/' + path;
       if (callback) callback(null, url, path);
     } else {
-      if (callback) callback('上传失败');
+      if (callback) callback('upload_fail');
     }
   });
 };
 
-Data.deletePhotoFromGitHub = function(path, callback) {
-  if (!Data.isGitHubConfigured()) { if (callback) callback(); return; }
-  Data.githubFetch('GET', 'contents/' + path, null, function(err, xhr) {
-    if (xhr && xhr.status === 200) {
+Data.deletePhotoFromGH = function(path) {
+  if (!Data.isGHAvailable()) return;
+  Data._ghRequest('GET', 'contents/' + path, null, function(err, xhr) {
+    if (!err && xhr && xhr.status === 200) {
       try {
         var resp = JSON.parse(xhr.responseText);
-        Data.githubFetch('DELETE', 'contents/' + path, { message: '删除照片', sha: resp.sha, branch: 'main' });
+        Data._ghRequest('DELETE', 'contents/' + path, { message: '删除照片', sha: resp.sha, branch: 'main' }, function() {});
       } catch (e) {}
     }
   });
 };
 
-// ===== 核心：load / save（双通道） =====
-
-Data.load = function() {
-  // 优先使用内存缓存
-  if (Data.cache) return Data.cache;
-  // 其次读 localStorage（之前存的数据）
-  try {
-    var raw = localStorage.getItem(Data.LS_KEY);
-    if (raw) {
-      Data.cache = JSON.parse(raw);
-      return Data.cache;
-    }
-  } catch (e) {}
-  // 最后返回默认
-  Data.cache = Data.getDefaultData();
-  return Data.cache;
-};
-
-Data.save = function(data) {
-  Data.cache = data;
-  // 立即写入 localStorage（即时生效）
-  try { localStorage.setItem(Data.LS_KEY, JSON.stringify(data)); } catch (e) {}
-  // 异步同步到 GitHub（不阻塞）
-  if (Data.isGitHubConfigured()) {
-    Data.saveToGitHub(data);
-  }
-};
-
-// ===== 启动流程：先读本地，再尝试 GitHub 同步 =====
-
-Data.ready = function(callback) {
-  Data.onReady.push(callback);
-  if (Data._starting) return;
-  Data._starting = true;
-
-  // 第一步：立即加载本地数据，让页面先展示
-  var localData = Data.load();
-  for (var i = 0; i < Data.onReady.length; i++) {
-    Data.onReady[i](localData);
-  }
-
-  // 第二步：尝试从 GitHub 拉取最新数据（覆盖本地）
-  Data.fetchFromGitHub(function(ghData) {
-    if (ghData) {
-      Data.cache = ghData;
-      // 重新初始化所有模块
-      App.reinit();
-    }
-  });
-};
-
-// ===== 图片路径修复：如果是旧数据(base64)，保持原样；如果是 GitHub URL 直接使用 =====
-
-Data.resolvePhotoUrl = function(data) {
-  if (!data) return '';
-  // 如果是 GitHub raw URL 或 data URL，直接返回
-  if (data.indexOf('http') === 0 || data.indexOf('data:') === 0) return data;
-  // 否则作为路径处理
-  return data;
-};
-
 // ===== 工具函数 =====
 
-Data.currentUser = function() {
-  var d = Data.load(); return d.currentUser || 'default';
-};
-Data.getUser = function(userId) {
-  var d = Data.load(); return d.users[userId] || d.users['default'];
-};
-Data.getUserDisplay = function(userId) {
-  var u = Data.getUser(userId);
-  return u || { nickname: '?', avatar: '\u{1F600}', avatarType: 'emoji' };
-};
-Data.generateId = function() {
-  return Date.now().toString(36) + Math.random().toString(36).substr(2, 6);
-};
+Data.currentUser = function() { return Data.load().currentUser || 'default'; };
+Data.getUser = function(uid) { var d = Data.load(); return d.users[uid] || d.users['default']; };
+Data.getUserDisplay = function(uid) { var u = Data.getUser(uid); return u || { nickname: '?', avatar: '\u{1F600}', avatarType: 'emoji' }; };
+Data.generateId = function() { return Date.now().toString(36) + Math.random().toString(36).substr(2, 6); };
 Data.now = function() { return new Date().toISOString(); };
 
 Data.getToday = function() {
@@ -266,14 +258,10 @@ Data.getToday = function() {
 };
 
 Data.getActivity = function(limit) {
-  limit = limit || 20;
-  var d = Data.load(), acts = [];
-  for (var k in (d.notes||{})) if (d.notes.hasOwnProperty(k)) {
-    var n = d.notes[k]; acts.push({ type:'note', text:n.text, time:n.createdAt, userId:n.createdBy, id:k });
-    if (n.lastEditedAt && n.lastEditedAt !== n.createdAt) acts.push({ type:'edit', text:n.text, time:n.lastEditedAt, userId:n.lastEditedBy, id:k });
-  }
-  for (var k2 in (d.todos||{})) if (d.todos.hasOwnProperty(k2)) { var t=d.todos[k2]; acts.push({ type:'todo', text:t.text, time:t.createdAt, userId:t.createdBy, id:k2 }); }
-  for (var k3 in (d.countdowns||{})) if (d.countdowns.hasOwnProperty(k3)) { var c=d.countdowns[k3]; acts.push({ type:'countdown', text:c.name, time:c.createdAt, userId:c.createdBy, id:k3 }); }
+  limit = limit || 20; var d = Data.load(), acts = [];
+  for (var k in (d.notes||{})) if (d.notes.hasOwnProperty(k)) { var n=d.notes[k]; acts.push({ type:'note',text:n.text,time:n.createdAt,userId:n.createdBy,id:k }); if (n.lastEditedAt && n.lastEditedAt!==n.createdAt) acts.push({ type:'edit',text:n.text,time:n.lastEditedAt,userId:n.lastEditedBy,id:k }); }
+  for (var k2 in (d.todos||{})) if (d.todos.hasOwnProperty(k2)) { var t=d.todos[k2]; acts.push({ type:'todo',text:t.text,time:t.createdAt,userId:t.createdBy,id:k2 }); }
+  for (var k3 in (d.countdowns||{})) if (d.countdowns.hasOwnProperty(k3)) { var c=d.countdowns[k3]; acts.push({ type:'countdown',text:c.name,time:c.createdAt,userId:c.createdBy,id:k3 }); }
   acts.sort(function(a,b){return b.time.localeCompare(a.time);});
   return acts.slice(0, limit);
 };
@@ -294,9 +282,9 @@ Data.importData = function(event) {
     try {
       var imported = JSON.parse(e.target.result);
       if (imported.users && imported.notes !== undefined) {
-        Data.cache = imported; Data.save(imported);
-        Toast.show('数据导入成功，正在同步...','success');
-        App.init();
+        Data.save(imported);
+        Toast.show('数据导入成功，页面即将刷新...','success');
+        setTimeout(function() { App.init(); }, 500);
       } else { Toast.show('数据格式无效','error'); }
     } catch (err) { Toast.show('导入失败','error'); }
   };
