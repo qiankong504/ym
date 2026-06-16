@@ -12,17 +12,10 @@
   "theme": "midnight",
   "settings": {
     "autoPlay": false,
-    "cardOpacity": 80,
-    "cardFrost": 60,
-    "backgroundPhotos": [
-      {
-        "id": "mqgo8g7jd5bhw4",
-        "name": "Screenshot_20260616_154825.jpg",
-        "data": "https://raw.githubusercontent.com/qiankong504/ym/main/data/photos/mqgo8g7jd5bhw4.jpg",
-        "path": "data/photos/mqgo8g7jd5bhw4.jpg"
-      }
-    ],
-    "activeBackground": "https://raw.githubusercontent.com/qiankong504/ym/main/data/photos/mqgo8g7jd5bhw4.jpg"
+    "cardOpacity": 88,
+    "cardFrost": 21,
+    "backgroundPhotos": [],
+    "activeBackground": ""
   },
   "notes": {
     "mqgnpwsh89itte": {
