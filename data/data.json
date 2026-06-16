@@ -3,7 +3,7 @@
     "default": {
       "id": "default",
       "nickname": "1",
-      "avatar": "ð",
+      "avatar": "Ã°ÂÂÂ",
       "avatarType": "emoji",
       "createdAt": "2026-06-16T13:06:42.680Z"
     }
@@ -40,6 +40,16 @@
       "lastEditedAt": "2026-06-16T13:08:10.952Z",
       "_id": "mqgnp2m7rzvqpu",
       "_key": "mqgnp2m7rzvqpu"
+    },
+    "mqgnxbrff63am0": {
+      "text": "2",
+      "date": "2026-06-17",
+      "done": false,
+      "createdBy": "default",
+      "createdAt": "2026-06-16T13:13:15.723Z",
+      "lastEditedBy": "default",
+      "lastEditedAt": "2026-06-16T13:13:15.723Z",
+      "_id": "mqgnxbrff63am0"
     }
   },
   "countdowns": {},
