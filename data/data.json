@@ -9,11 +9,11 @@
     }
   },
   "currentUser": "default",
-  "theme": "cherry",
+  "theme": "midnight",
   "settings": {
     "autoPlay": false,
     "cardOpacity": 10,
-    "cardFrost": 28,
+    "cardFrost": 3,
     "backgroundPhotos": [],
     "activeBackground": ""
   },
