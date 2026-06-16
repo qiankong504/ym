@@ -12,8 +12,8 @@
   "theme": "midnight",
   "settings": {
     "autoPlay": false,
-    "cardOpacity": 81,
-    "cardFrost": 60,
+    "cardOpacity": 55,
+    "cardFrost": 19,
     "backgroundPhotos": [
       {
         "id": "mqgo8g7jd5bhw4",
