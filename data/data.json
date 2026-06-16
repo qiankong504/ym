@@ -94,6 +94,16 @@
       "lastEditedAt": "2026-06-16T14:02:00.827Z",
       "_id": "mqgpo0saa8mj42",
       "_key": "mqgpo0saa8mj42"
+    },
+    "mqgq1227xu5hff": {
+      "text": "1",
+      "category": "study",
+      "photo": "",
+      "createdBy": "default",
+      "createdAt": "2026-06-16T17:12:00",
+      "lastEditedBy": "default",
+      "lastEditedAt": "2026-06-16T17:12:00",
+      "_id": "mqgq1227xu5hff"
     }
   },
   "todos": {
@@ -111,11 +121,11 @@
     "mqgnxbrff63am0": {
       "text": "2",
       "date": "2026-06-17",
-      "done": true,
+      "done": false,
       "createdBy": "default",
       "createdAt": "2026-06-16T13:13:15.723Z",
       "lastEditedBy": "default",
-      "lastEditedAt": "2026-06-16T14:05:17.209Z",
+      "lastEditedAt": "2026-06-16T14:11:46.456Z",
       "_id": "mqgnxbrff63am0",
       "_key": "mqgnxbrff63am0"
     },
