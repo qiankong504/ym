@@ -3,13 +3,13 @@
     "default": {
       "id": "default",
       "nickname": "1",
-      "avatar": "Ã°ÂÂÂ",
+      "avatar": "ÃÂ°ÃÂÃÂÃÂ",
       "avatarType": "emoji",
       "createdAt": "2026-06-16T13:06:42.680Z"
     }
   },
   "currentUser": "default",
-  "theme": "midnight",
+  "theme": "aurora",
   "settings": {
     "autoPlay": false,
     "cardOpacity": 80,
@@ -28,23 +28,14 @@
       "lastEditedAt": "2026-06-16T13:10:35.873Z",
       "_id": "mqgnpwsh89itte"
     },
-    "mqgnxsig34wxif": {
-      "text": "啊",
-      "mood": "happy",
+    "mqgo4amazd0vhl": {
+      "text": "33",
+      "mood": "angry",
       "photo": "",
       "createdBy": "default",
-      "createdAt": "2026-06-16T13:13:37.432Z",
+      "createdAt": "2026-06-16T13:18:40.834Z",
       "lastEditedBy": "default",
-      "lastEditedAt": "2026-06-16T13:13:37.432Z"
-    },
-    "mqgo7049ez2lu7": {
-      "text": "4",
-      "mood": "sad",
-      "photo": "",
-      "createdBy": "default",
-      "createdAt": "2026-06-16T13:20:47.193Z",
-      "lastEditedBy": "default",
-      "lastEditedAt": "2026-06-16T13:20:47.193Z"
+      "lastEditedAt": "2026-06-16T13:18:40.834Z"
     }
   },
   "todos": {
@@ -67,8 +58,7 @@
       "createdAt": "2026-06-16T13:13:15.723Z",
       "lastEditedBy": "default",
       "lastEditedAt": "2026-06-16T13:13:15.723Z",
-      "_id": "mqgnxbrff63am0",
-      "_key": "mqgnxbrff63am0"
+      "_id": "mqgnxbrff63am0"
     }
   },
   "countdowns": {},
