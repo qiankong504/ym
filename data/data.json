@@ -9,7 +9,7 @@
     }
   },
   "currentUser": "default",
-  "theme": "sunset",
+  "theme": "midnight",
   "settings": {
     "autoPlay": false,
     "cardOpacity": 13,
@@ -54,6 +54,15 @@
       "createdAt": "2026-06-16T13:26:34.323Z",
       "lastEditedBy": "default",
       "lastEditedAt": "2026-06-16T13:26:34.323Z"
+    },
+    "mqgoygmug7ucpa": {
+      "text": "11111",
+      "category": "",
+      "photo": "",
+      "createdBy": "default",
+      "createdAt": "2026-06-16T13:42:08.310Z",
+      "lastEditedBy": "default",
+      "lastEditedAt": "2026-06-16T13:42:08.310Z"
     }
   },
   "todos": {
@@ -90,15 +99,6 @@
       "_id": "mqgoid8c4iq88e"
     }
   },
-  "countdowns": {
-    "mqgojlr6yytk9c": {
-      "name": "测试",
-      "date": "2026-06-18",
-      "createdBy": "default",
-      "createdAt": "2026-06-16T13:30:35.106Z",
-      "lastEditedBy": "default",
-      "lastEditedAt": "2026-06-16T13:30:35.106Z"
-    }
-  },
+  "countdowns": {},
   "music": []
 }
