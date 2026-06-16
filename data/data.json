@@ -13,7 +13,7 @@
   "settings": {
     "autoPlay": false,
     "cardOpacity": 10,
-    "cardFrost": 67,
+    "cardFrost": 0,
     "backgroundPhotos": [],
     "activeBackground": ""
   },
@@ -98,11 +98,11 @@
     "mqgnxbrff63am0": {
       "text": "2",
       "date": "2026-06-17",
-      "done": false,
+      "done": true,
       "createdBy": "default",
       "createdAt": "2026-06-16T13:13:15.723Z",
       "lastEditedBy": "default",
-      "lastEditedAt": "2026-06-16T13:13:15.723Z",
+      "lastEditedAt": "2026-06-16T14:05:17.209Z",
       "_id": "mqgnxbrff63am0",
       "_key": "mqgnxbrff63am0"
     },
