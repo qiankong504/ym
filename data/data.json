@@ -9,13 +9,20 @@
     }
   },
   "currentUser": "default",
-  "theme": "ocean",
+  "theme": "cherry",
   "settings": {
     "autoPlay": false,
     "cardOpacity": 10,
     "cardFrost": 0,
-    "backgroundPhotos": [],
-    "activeBackground": ""
+    "backgroundPhotos": [
+      {
+        "id": "mqgq4063jylo8t",
+        "name": "colorful-rainbow-appearing-sky-nature-landscape.jpg",
+        "data": "https://raw.githubusercontent.com/qiankong504/ym/main/data/photos/mqgq4063jylo8t.jpg",
+        "path": "data/photos/mqgq4063jylo8t.jpg"
+      }
+    ],
+    "activeBackground": "https://raw.githubusercontent.com/qiankong504/ym/main/data/photos/mqgq4063jylo8t.jpg"
   },
   "notes": {
     "mqgnpwsh89itte": {
