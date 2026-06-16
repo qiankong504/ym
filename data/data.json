@@ -3,7 +3,7 @@
     "default": {
       "id": "default",
       "nickname": "1",
-      "avatar": "Ã°ÂÂÂ",
+      "avatar": "ÃÂ°ÃÂÃÂÃÂ",
       "avatarType": "emoji",
       "createdAt": "2026-06-16T13:06:42.680Z"
     }
@@ -27,6 +27,15 @@
       "lastEditedBy": "default",
       "lastEditedAt": "2026-06-16T13:10:35.873Z",
       "_id": "mqgnpwsh89itte"
+    },
+    "mqgo4amazd0vhl": {
+      "text": "33",
+      "mood": "angry",
+      "photo": "",
+      "createdBy": "default",
+      "createdAt": "2026-06-16T13:18:40.834Z",
+      "lastEditedBy": "default",
+      "lastEditedAt": "2026-06-16T13:18:40.834Z"
     }
   },
   "todos": {
