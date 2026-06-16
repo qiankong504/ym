@@ -13,7 +13,7 @@
   "settings": {
     "autoPlay": false,
     "cardOpacity": 10,
-    "cardFrost": 0,
+    "cardFrost": 45,
     "backgroundPhotos": [],
     "activeBackground": ""
   },
