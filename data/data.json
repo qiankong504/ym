@@ -2,8 +2,8 @@
   "users": {
     "default": {
       "id": "default",
-      "nickname": "æ",
-      "avatar": "ð",
+      "nickname": "Ã¦ÂÂ",
+      "avatar": "Ã°ÂÂÂ",
       "avatarType": "emoji",
       "createdAt": "2026-06-16T13:06:42.680Z"
     }
@@ -19,24 +19,25 @@
   },
   "notes": {
     "mqgnpwsh89itte": {
-      "text": "第一版",
+      "text": "ç¬¬ä¸ç",
       "mood": "calm",
       "photo": "",
       "createdBy": "default",
       "createdAt": "2026-06-16T13:07:29.729Z",
       "lastEditedBy": "default",
-      "lastEditedAt": "2026-06-16T13:07:29.729Z"
+      "lastEditedAt": "2026-06-16T13:07:29.729Z",
+      "_id": "mqgnpwsh89itte"
     }
   },
   "todos": {
     "mqgnp2m7rzvqpu": {
       "text": "1",
       "date": "2026-06-17",
-      "done": false,
+      "done": true,
       "createdBy": "default",
       "createdAt": "2026-06-16T13:06:50.623Z",
       "lastEditedBy": "default",
-      "lastEditedAt": "2026-06-16T13:06:50.623Z",
+      "lastEditedAt": "2026-06-16T13:08:10.952Z",
       "_id": "mqgnp2m7rzvqpu",
       "_key": "mqgnp2m7rzvqpu"
     }
