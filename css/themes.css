@@ -1,0 +1,120 @@
+/* ========== Theme System (Glassmorphism palette) ========== */
+body {
+  transition: background 0.5s ease, color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
+}
+
+body *, body *::before, body *::after {
+  transition: background 0.5s ease, color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
+}
+
+/* Midnight (default) */
+.theme-midnight {
+  --bg-primary: #0b0b18;
+  --bg-secondary: #12122a;
+  --bg-card-r: 22; --bg-card-g: 20; --bg-card-b: 45;
+  --bg-card-hr: 32; --bg-card-hg: 28; --bg-card-hb: 55;
+  --text-primary: #e8e4f0;
+  --text-secondary: #8a84a8;
+  --accent-primary: #8b6ccf;
+  --accent-secondary: #6a8ccf;
+  --border-color: rgba(139, 108, 207, 0.15);
+  --border-hover: rgba(139, 108, 207, 0.35);
+}
+
+/* Aurora */
+.theme-aurora {
+  --bg-primary: #080f12;
+  --bg-secondary: #0c1a1a;
+  --bg-card-r: 12; --bg-card-g: 30; --bg-card-b: 24;
+  --bg-card-hr: 18; --bg-card-hg: 40; --bg-card-hb: 32;
+  --text-primary: #d0f0d8;
+  --text-secondary: #78a890;
+  --accent-primary: #4ecb80;
+  --accent-secondary: #3abca0;
+  --border-color: rgba(78, 203, 128, 0.15);
+  --border-hover: rgba(78, 203, 128, 0.35);
+}
+
+/* Sunset */
+.theme-sunset {
+  --bg-primary: #181008;
+  --bg-secondary: #2a1a0f;
+  --bg-card-r: 42; --bg-card-g: 24; --bg-card-b: 15;
+  --bg-card-hr: 52; --bg-card-hg: 32; --bg-card-hb: 20;
+  --text-primary: #f0d8c0;
+  --text-secondary: #b88868;
+  --accent-primary: #e68238;
+  --accent-secondary: #d46020;
+  --border-color: rgba(230, 130, 56, 0.15);
+  --border-hover: rgba(230, 130, 56, 0.35);
+}
+
+/* Ocean */
+.theme-ocean {
+  --bg-primary: #080e18;
+  --bg-secondary: #0c1830;
+  --bg-card-r: 14; --bg-card-g: 22; --bg-card-b: 45;
+  --bg-card-hr: 20; --bg-card-hg: 30; --bg-card-hb: 55;
+  --text-primary: #c0d8f0;
+  --text-secondary: #6888b0;
+  --accent-primary: #4898d8;
+  --accent-secondary: #3880c0;
+  --border-color: rgba(72, 152, 216, 0.15);
+  --border-hover: rgba(72, 152, 216, 0.35);
+}
+
+/* Cherry */
+.theme-cherry {
+  --bg-primary: #1a0810;
+  --bg-secondary: #2a0e18;
+  --bg-card-r: 42; --bg-card-g: 14; --bg-card-b: 24;
+  --bg-card-hr: 52; --bg-card-hg: 20; --bg-card-hb: 32;
+  --text-primary: #f0c0c8;
+  --text-secondary: #b87080;
+  --accent-primary: #d85050;
+  --accent-secondary: #c03838;
+  --border-color: rgba(216, 80, 80, 0.15);
+  --border-hover: rgba(216, 80, 80, 0.35);
+}
+
+/* Cyberpunk */
+.theme-cyberpunk {
+  --bg-primary: #0a0018;
+  --bg-secondary: #12002e;
+  --bg-card-r: 20; --bg-card-g: 0; --bg-card-b: 45;
+  --bg-card-hr: 30; --bg-card-hg: 8; --bg-card-hb: 55;
+  --text-primary: #e8c0f8;
+  --text-secondary: #a870c0;
+  --accent-primary: #e040e0;
+  --accent-secondary: #30d0d0;
+  --border-color: rgba(224, 64, 224, 0.15);
+  --border-hover: rgba(224, 64, 224, 0.35);
+}
+
+/* Forest */
+.theme-forest {
+  --bg-primary: #081208;
+  --bg-secondary: #0c1e0c;
+  --bg-card-r: 12; --bg-card-g: 30; --bg-card-b: 14;
+  --bg-card-hr: 18; --bg-card-hg: 40; --bg-card-hb: 20;
+  --text-primary: #c8e0b8;
+  --text-secondary: #70a068;
+  --accent-primary: #38b868;
+  --accent-secondary: #289450;
+  --border-color: rgba(56, 184, 104, 0.15);
+  --border-hover: rgba(56, 184, 104, 0.35);
+}
+
+/* Minimal */
+.theme-minimal {
+  --bg-primary: #f0f0f4;
+  --bg-secondary: #f8f8fc;
+  --bg-card-r: 255; --bg-card-g: 255; --bg-card-b: 255;
+  --bg-card-hr: 255; --bg-card-hg: 255; --bg-card-hb: 255;
+  --text-primary: #1a1a22;
+  --text-secondary: #888898;
+  --accent-primary: #5a5a6a;
+  --accent-secondary: #7a7a8a;
+  --border-color: rgba(0, 0, 0, 0.08);
+  --border-hover: rgba(0, 0, 0, 0.15);
+}
