@@ -290,3 +290,17 @@ Data.importData = function(event) {
   };
   reader.readAsText(file); event.target.value='';
 };
+
+// 检查 localStorage 剩余空间
+Data.checkStorage = function() {
+  try {
+    var test = 'x';
+    for (var i = 0; i < 12; i++) test += test; // ~4KB
+    var key = '_test_size_';
+    localStorage.setItem(key, test);
+    localStorage.removeItem(key);
+    return true;
+  } catch (e) {
+    return false;
+  }
+};

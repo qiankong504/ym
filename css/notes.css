@@ -128,3 +128,30 @@
   color: #ff6b6b;
   background: rgba(255, 107, 107, 0.1);
 }
+
+/* ===== 碎碎念详情弹窗 ===== */
+.note-detail-modal {
+  max-width: 100%;
+}
+
+.note-detail-modal .note-cat-tag {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 20px;
+  background: rgba(139, 108, 207, 0.15);
+  border: 1px solid rgba(139, 108, 207, 0.2);
+  color: #b8a0e0;
+  font-size: 12px;
+}
+
+/* ===== 分类标签 ===== */
+.note-cat-tag {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 20px;
+  background: rgba(139, 108, 207, 0.12);
+  border: 1px solid rgba(139, 108, 207, 0.15);
+  color: #b8a0e0;
+  font-size: 11px;
+  margin-bottom: 8px;
+}

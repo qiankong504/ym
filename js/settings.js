@@ -127,6 +127,7 @@ Settings.saveBgPhoto = function(event) {
     if (!d.settings.backgroundPhotos) d.settings.backgroundPhotos = [];
     d.settings.backgroundPhotos.push({ id: pid, name: file.name, data: dataUrl, path: '' });
     d.settings.activeBackground = dataUrl;
+    try { localStorage.setItem('_s_test_','1'); localStorage.removeItem('_s_test_'); } catch(e) { Toast.show('存储空间不足，照片过大','error'); return; }
     Data.save(d);
     Settings.renderBgPhotos();
     Settings.applyBgPhoto(dataUrl);
