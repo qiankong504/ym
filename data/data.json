@@ -3,7 +3,7 @@
     "default": {
       "id": "default",
       "nickname": "1",
-      "avatar": "😀",
+      "avatar": "ð",
       "avatarType": "emoji",
       "createdAt": "2026-06-16T13:06:42.680Z"
     }
@@ -19,13 +19,13 @@
   },
   "notes": {
     "mqgnpwsh89itte": {
-      "text": "Ã§Â¬Â¬Ã¤Â¸ÂÃ§ÂÂ",
+      "text": "123",
       "mood": "calm",
       "photo": "",
       "createdBy": "default",
       "createdAt": "2026-06-16T13:07:29.729Z",
       "lastEditedBy": "default",
-      "lastEditedAt": "2026-06-16T13:07:29.729Z",
+      "lastEditedAt": "2026-06-16T13:10:35.873Z",
       "_id": "mqgnpwsh89itte"
     }
   },
