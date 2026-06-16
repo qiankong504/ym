@@ -12,7 +12,7 @@
   "theme": "midnight",
   "settings": {
     "autoPlay": false,
-    "cardOpacity": 28,
+    "cardOpacity": 15,
     "cardFrost": 21,
     "backgroundPhotos": [
       {
