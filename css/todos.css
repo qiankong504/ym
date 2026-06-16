@@ -1,0 +1,80 @@
+/* ========== Todos ========== */
+.today-todos, #cal-day-todos {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.todo-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(8px);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  border-left: 3px solid var(--accent-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.todo-item:hover {
+  background: rgba(139, 108, 207, 0.06);
+}
+
+.todo-checkbox {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--accent-secondary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.todo-checkbox.checked {
+  background: var(--accent-secondary);
+  border-color: var(--accent-secondary);
+}
+
+.todo-checkbox.checked::after {
+  content: '\2713';
+  color: #fff;
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.todo-text {
+  flex: 1;
+  transition: all 0.2s ease;
+}
+
+.todo-text.done {
+  text-decoration: line-through;
+  opacity: 0.45;
+}
+
+.todo-delete {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 14px;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  opacity: 0;
+  transition: all 0.2s ease;
+}
+
+.todo-item:hover .todo-delete {
+  opacity: 1;
+}
+
+.todo-delete:hover {
+  color: #ff6b6b;
+  background: rgba(255, 107, 107, 0.1);
+}
