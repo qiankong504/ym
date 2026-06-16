@@ -2,23 +2,194 @@
   "users": {
     "default": {
       "id": "default",
-      "nickname": "我",
-      "avatar": "😊",
+      "nickname": "1",
+      "avatar": "Ã°ÂÂÂ",
       "avatarType": "emoji",
-      "createdAt": "2026-06-16T14:24:53.589Z"
+      "createdAt": "2026-06-16T13:06:42.680Z"
     }
   },
   "currentUser": "default",
-  "theme": "sunset",
+  "theme": "forest",
   "settings": {
     "autoPlay": false,
-    "cardOpacity": 80,
-    "cardFrost": 60,
-    "backgroundPhotos": [],
-    "activeBackground": ""
+    "cardOpacity": 10,
+    "cardFrost": 0,
+    "backgroundPhotos": [
+      {
+        "id": "mqgq4063jylo8t",
+        "name": "colorful-rainbow-appearing-sky-nature-landscape.jpg",
+        "data": "https://raw.githubusercontent.com/qiankong504/ym/main/data/photos/mqgq4063jylo8t.jpg",
+        "path": "data/photos/mqgq4063jylo8t.jpg"
+      }
+    ],
+    "activeBackground": "https://raw.githubusercontent.com/qiankong504/ym/main/data/photos/mqgq4063jylo8t.jpg"
   },
-  "notes": {},
-  "todos": {},
-  "countdowns": {},
+  "notes": {
+    "mqgnpwsh89itte": {
+      "text": "123",
+      "mood": "calm",
+      "photo": "",
+      "createdBy": "default",
+      "createdAt": "2026-06-16T13:07:29.729Z",
+      "lastEditedBy": "default",
+      "lastEditedAt": "2026-06-16T13:10:35.873Z",
+      "_id": "mqgnpwsh89itte",
+      "_key": "mqgnpwsh89itte"
+    },
+    "mqgnxsig34wxif": {
+      "text": "啊",
+      "mood": "happy",
+      "photo": "",
+      "createdBy": "default",
+      "createdAt": "2026-06-16T13:13:37.432Z",
+      "lastEditedBy": "default",
+      "lastEditedAt": "2026-06-16T13:13:37.432Z",
+      "_id": "mqgnxsig34wxif",
+      "_key": "mqgnxsig34wxif"
+    },
+    "mqgo7049ez2lu7": {
+      "text": "4",
+      "mood": "sad",
+      "photo": "",
+      "createdBy": "default",
+      "createdAt": "2026-06-16T13:20:47.193Z",
+      "lastEditedBy": "default",
+      "lastEditedAt": "2026-06-16T13:20:47.193Z",
+      "_id": "mqgo7049ez2lu7",
+      "_key": "mqgo7049ez2lu7"
+    },
+    "mqgoefyrwkn2yb": {
+      "text": "测试同步",
+      "mood": "excited",
+      "photo": "",
+      "createdBy": "default",
+      "createdAt": "2026-06-16T13:26:34.323Z",
+      "lastEditedBy": "default",
+      "lastEditedAt": "2026-06-16T13:26:34.323Z",
+      "_id": "mqgoefyrwkn2yb",
+      "_key": "mqgoefyrwkn2yb"
+    },
+    "mqgoygmug7ucpa": {
+      "text": "11111",
+      "category": "",
+      "photo": "",
+      "createdBy": "default",
+      "createdAt": "2026-06-16T13:42:08.310Z",
+      "lastEditedBy": "default",
+      "lastEditedAt": "2026-06-16T13:42:08.310Z",
+      "_id": "mqgoygmug7ucpa",
+      "_key": "mqgoygmug7ucpa"
+    },
+    "mqgoyqj7ynosf6": {
+      "text": "1",
+      "category": "work",
+      "photo": "",
+      "createdBy": "default",
+      "createdAt": "2026-06-16T13:42:21.139Z",
+      "lastEditedBy": "default",
+      "lastEditedAt": "2026-06-16T13:42:21.139Z",
+      "_id": "mqgoyqj7ynosf6",
+      "_key": "mqgoyqj7ynosf6"
+    },
+    "mqgpo0saa8mj42": {
+      "text": "00",
+      "category": "work",
+      "photo": "",
+      "createdBy": "default",
+      "createdAt": "2026-06-16T14:02:00.827Z",
+      "lastEditedBy": "default",
+      "lastEditedAt": "2026-06-16T14:02:00.827Z",
+      "_id": "mqgpo0saa8mj42",
+      "_key": "mqgpo0saa8mj42"
+    },
+    "mqgq1227xu5hff": {
+      "text": "1",
+      "category": "study",
+      "photo": "",
+      "createdBy": "default",
+      "createdAt": "2026-06-16T17:12:00",
+      "lastEditedBy": "default",
+      "lastEditedAt": "2026-06-16T17:12:00",
+      "_id": "mqgq1227xu5hff"
+    },
+    "mqgqjptd9ve1vq": {
+      "text": "123333",
+      "category": "life",
+      "photo": "",
+      "createdBy": "default",
+      "createdAt": "2026-06-16T17:26:00",
+      "lastEditedBy": "default",
+      "lastEditedAt": "2026-06-16T17:26:00",
+      "_id": "mqgqjptd9ve1vq"
+    }
+  },
+  "todos": {
+    "mqgnp2m7rzvqpu": {
+      "text": "1",
+      "date": "2026-06-17",
+      "done": false,
+      "createdBy": "default",
+      "createdAt": "2026-06-16T13:06:50.623Z",
+      "lastEditedBy": "default",
+      "lastEditedAt": "2026-06-16T14:11:45.733Z",
+      "_id": "mqgnp2m7rzvqpu",
+      "_key": "mqgnp2m7rzvqpu"
+    },
+    "mqgnxbrff63am0": {
+      "text": "2",
+      "date": "2026-06-17",
+      "done": false,
+      "createdBy": "default",
+      "createdAt": "2026-06-16T13:13:15.723Z",
+      "lastEditedBy": "default",
+      "lastEditedAt": "2026-06-16T14:11:46.456Z",
+      "_id": "mqgnxbrff63am0",
+      "_key": "mqgnxbrff63am0"
+    },
+    "mqgoid8c4iq88e": {
+      "text": "4545",
+      "date": "2026-06-16",
+      "done": false,
+      "createdBy": "default",
+      "createdAt": "2026-06-16T13:29:37.404Z",
+      "lastEditedBy": "default",
+      "lastEditedAt": "2026-06-16T13:29:37.404Z",
+      "_id": "mqgoid8c4iq88e",
+      "_key": "mqgoid8c4iq88e"
+    },
+    "mqgp11p4viwzoy": {
+      "text": "4",
+      "date": "2026-06-17",
+      "done": true,
+      "createdBy": "default",
+      "createdAt": "2026-06-16T13:44:08.920Z",
+      "lastEditedBy": "default",
+      "lastEditedAt": "2026-06-16T14:05:17.843Z",
+      "_id": "mqgp11p4viwzoy",
+      "_key": "mqgp11p4viwzoy"
+    },
+    "mqgq2ny62tykas": {
+      "text": "我",
+      "date": "2026-06-19",
+      "done": false,
+      "createdBy": "default",
+      "createdAt": "2026-06-16T14:13:24.030Z",
+      "lastEditedBy": "default",
+      "lastEditedAt": "2026-06-16T14:13:24.030Z",
+      "_id": "mqgq2ny62tykas",
+      "_key": "mqgq2ny62tykas"
+    }
+  },
+  "countdowns": {
+    "mqgq1f11tsvq4s": {
+      "name": "有",
+      "date": "2026-06-19",
+      "createdBy": "default",
+      "createdAt": "2026-06-16T14:12:25.813Z",
+      "lastEditedBy": "default",
+      "lastEditedAt": "2026-06-16T14:12:25.813Z",
+      "_id": "mqgq1f11tsvq4s"
+    }
+  },
   "music": []
 }
