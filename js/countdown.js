@@ -1,4 +1,4 @@
-/* ========== Countdown Module (ES5) ========== */
+/* ========== Countdown Module ========== */
 
 var Countdown = {};
 
@@ -25,9 +25,7 @@ Countdown.render = function() {
     }
   }
 
-  items.sort(function(a, b) {
-    return a.date.localeCompare(b.date);
-  });
+  items.sort(function(a, b) { return a.date.localeCompare(b.date); });
 
   if (items.length === 0) {
     el.innerHTML = '<div class="empty-state">暂无倒计时</div>';
@@ -56,9 +54,9 @@ Countdown.render = function() {
 };
 
 Countdown.openAddModal = function() {
-  var html = '<h3>添加倒计时事件</h3>' +
-    '<label>事件名称</label><input type="text" id="countdown-name-input" placeholder="事件名称">' +
-    '<label>日期</label><input type="date" id="countdown-date-input">' +
+  var html = '<h3>添加倒计时</h3>' +
+    '<label>事件名称</label><input type="text" id="countdown-name-input" placeholder="事件名称" style="width:100%;padding:11px 14px;background:rgba(0,0,0,0.35);border:1px solid rgba(139,108,207,0.2);border-radius:10px;color:#f0ecf8;font-size:14px;outline:none;font-family:inherit;">' +
+    '<label>日期</label><input type="date" id="countdown-date-input" style="width:100%;padding:11px 14px;background:rgba(0,0,0,0.35);border:1px solid rgba(139,108,207,0.2);border-radius:10px;color:#f0ecf8;font-size:14px;outline:none;font-family:inherit;color-scheme:dark;">' +
     '<div class="btn-row">' +
     '<button class="btn btn-secondary" onclick="Modal.close()">取消</button>' +
     '<button class="btn btn-primary" onclick="Countdown.saveCountdown()">保存</button></div>';
@@ -69,14 +67,8 @@ Countdown.openAddModal = function() {
 Countdown.saveCountdown = function() {
   var nameEl = document.getElementById('countdown-name-input');
   var dateEl = document.getElementById('countdown-date-input');
-  if (!nameEl || !nameEl.value.trim()) {
-    Toast.show('请输入事件名称', 'error');
-    return;
-  }
-  if (!dateEl || !dateEl.value) {
-    Toast.show('请选择日期', 'error');
-    return;
-  }
+  if (!nameEl || !nameEl.value.trim()) { Toast.show('请输入事件名称', 'error'); return; }
+  if (!dateEl || !dateEl.value) { Toast.show('请选择日期', 'error'); return; }
 
   var d = Data.load();
   var cd = d.countdowns || {};
@@ -103,13 +95,6 @@ Countdown.deleteCountdown = function(id) {
   Modal.confirm('确定要删除这个倒计时吗？', function() {
     var d = Data.load();
     var cd = d.countdowns || {};
-    if (cd[id]) {
-      delete cd[id];
-      d.countdowns = cd;
-      Data.save(d);
-      Countdown.render();
-      Dashboard.renderCountdownPreview();
-      Toast.show('已删除', 'info');
-    }
+    if (cd[id]) { delete cd[id]; d.countdowns = cd; Data.save(d); Countdown.render(); Dashboard.renderCountdownPreview(); Toast.show('已删除', 'info'); }
   });
 };

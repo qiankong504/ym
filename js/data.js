@@ -57,20 +57,24 @@ Data.getDefaultData = function() {
 // ===== 核心：load / save（永远可靠） =====
 
 Data.load = function() {
+  // 优先使用内存缓存
+  if (Data.cache) return Data.cache;
   try {
     var raw = localStorage.getItem(Data.LS_KEY);
     if (raw) {
       var parsed = JSON.parse(raw);
-      // 确保必要字段存在
       if (parsed.notes !== undefined && parsed.users !== undefined) {
-        return parsed;
+        Data.cache = parsed;
+        return Data.cache;
       }
     }
   } catch (e) {}
-  return Data.getDefaultData();
+  Data.cache = Data.getDefaultData();
+  return Data.cache;
 };
 
 Data.save = function(data) {
+  Data.cache = data;
   try {
     localStorage.setItem(Data.LS_KEY, JSON.stringify(data));
   } catch (e) {
@@ -302,5 +306,15 @@ Data.checkStorage = function() {
     return true;
   } catch (e) {
     return false;
+  }
+};
+
+Data.clearAll = function() {
+  if (confirm('确定要清除所有数据吗？这个操作不可撤销。')) {
+    try { localStorage.removeItem(Data.LS_KEY); } catch (e) {}
+    try { localStorage.removeItem('gh_config'); } catch (e) {}
+    Data.cache = Data.getDefaultData();
+    Toast.show('数据已清除', 'info');
+    App.init();
   }
 };

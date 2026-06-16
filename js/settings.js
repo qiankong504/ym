@@ -17,7 +17,7 @@ Settings.init = function() {
 
 // ===== GitHub 配置 =====
 
-Settings.saveGHConfig = function() {
+Settings.saveGitHubConfig = function() {
   var ownerEl = document.getElementById('gh-owner');
   var repoEl = document.getElementById('gh-repo');
   var tokenEl = document.getElementById('gh-token');
@@ -127,10 +127,14 @@ Settings.saveBgPhoto = function(event) {
     if (!d.settings.backgroundPhotos) d.settings.backgroundPhotos = [];
     d.settings.backgroundPhotos.push({ id: pid, name: file.name, data: dataUrl, path: '' });
     d.settings.activeBackground = dataUrl;
-    try { localStorage.setItem('_s_test_','1'); localStorage.removeItem('_s_test_'); } catch(e) { Toast.show('存储空间不足，照片过大','error'); return; }
-    Data.save(d);
+    try {
+      Data.save(d);
+    } catch(e) {
+      Toast.show('保存失败：存储空间不足'+e.message,'error'); return;
+    }
     Settings.renderBgPhotos();
     Settings.applyBgPhoto(dataUrl);
+    Toast.show('背景照片已保存，刷新后仍有效','success');
     // 异步上传到 GitHub
     if (Data.isGHAvailable()) {
       Data.uploadPhotoToGH(pid, dataUrl, function(err, url) {
