@@ -12,8 +12,8 @@
   "theme": "ocean",
   "settings": {
     "autoPlay": false,
-    "cardOpacity": 10,
-    "cardFrost": 54,
+    "cardOpacity": 12,
+    "cardFrost": 66,
     "backgroundPhotos": [],
     "activeBackground": ""
   },
